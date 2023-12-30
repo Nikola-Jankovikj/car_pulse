@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../model/car.dart';
 import '../service/car_service.dart';
+import 'car_detail_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -14,7 +15,6 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   List<Car> cars = [];
-  //late Uint8List photoBytes;
 
   @override
   void initState() {
@@ -44,8 +44,10 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showAddCarDialog(context);
+        onPressed: () async {
+          await _showAddCarDialog(context);
+          // Reload cars after adding a new one
+          await loadCars();
         },
         child: const Icon(Icons.add),
       ),
@@ -53,42 +55,68 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Uint8List decoded(String string){
+  Uint8List decoded(String string) {
     return base64Decode(string);
   }
 
   Widget _buildCarCard(Car car) {
-    return Card(
-      margin: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          Image.memory(
-            // Convert base64 photo to bytes
-            // Uint8List.fromList(car.photoBase64),
-           // Uint8List.fromList(decoded(car.photoBase64!)),
-            base64Decode(car.photoBase64!),
-            height: 150,
-            width: double.infinity,
-            fit: BoxFit.cover,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "${car.make} ${car.model}",
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-              ],
+    return GestureDetector(
+      onTap: () async {
+        await _onCarTap(context, car);
+        // Reload cars after updating the car
+        await loadCars();
+      },
+      child: Card(
+        margin: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            if (car.photoBase64 != null && car.photoBase64!.isNotEmpty)
+              Image.memory(
+                base64Decode(car.photoBase64!),
+                height: 150,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "${car.make} ${car.model}",
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
+
+  Future<void> _onCarTap(BuildContext context, Car car) async {
+    // Navigate to a new screen and pass the Car object
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CarDetailScreen(
+          car: car,
+          onPhotoChanged: (newPhoto) async {
+            // Update the photo in the current car list
+            final updatedCar = cars.firstWhere((element) => element.id == car.id);
+            updatedCar.photoBase64 = base64Encode(newPhoto);
+            await CarService().saveCar(updatedCar);
+
+            // Reload cars after updating the photo
+            await loadCars();
+          },
+        ),
+      ),
+    );
+  }
 
   Future<void> _showAddCarDialog(BuildContext context) async {
     String make = '';
@@ -124,10 +152,10 @@ class _MainScreenState extends State<MainScreen> {
               child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 // Add logic to create and add a new car to the list
                 if (make.isNotEmpty && model.isNotEmpty) {
-                  _addNewCar(make, model);
+                  await _addNewCar(make, model);
                   Navigator.of(context).pop(); // Close the dialog
                 }
               },
@@ -139,11 +167,11 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  void _addNewCar(String make, String model) {
+  Future<void> _addNewCar(String make, String model) async {
     Car newCar = Car(make: make, model: model);
     setState(() {
       cars.add(newCar);
     });
-    CarService().saveCar(newCar); // Save the updated list to storage
+    await CarService().saveCar(newCar); // Save the updated list to storage
   }
 }
