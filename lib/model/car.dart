@@ -12,33 +12,21 @@ class Car {
     List<ServiceInfo>? serviceRecords,
   }) : serviceRecords = serviceRecords ?? [];
 
-  Map<String, dynamic> toJson() {
-    return {
+  String carToJson() {
+    Map<String, dynamic> carMap = {
       'make': make,
       'model': model,
-      'serviceRecords': serviceRecords.map((record) => record.toJson()).toList(),
+      'serviceRecords': ServiceInfo.serviceInfoListToJson(serviceRecords),
     };
+    return json.encode(carMap);
   }
 
-  factory Car.fromJson(Map<String, dynamic> json) {
+  factory Car.carFromJson(String data) {
+    Map<String, dynamic> carMap = json.decode(data);
     return Car(
-      make: json['make'],
-      model: json['model'],
-      serviceRecords: (json['serviceRecords'] as List<dynamic>?)
-          ?.map((recordJson) => ServiceInfo.fromJson(recordJson))
-          .toList() ??
-          [], // Deserialize ServiceInfo objects from JSON
+      make: carMap['make'],
+      model: carMap['model'],
+      serviceRecords: ServiceInfo.serviceInfoListFromJson(carMap['serviceRecords']),
     );
   }
-
-
-  String toJsonString() {
-    return jsonEncode(toJson());
-  }
-
-  factory Car.fromJsonString(String jsonString) {
-    final Map<String, dynamic> json = jsonDecode(jsonString);
-    return Car.fromJson(json);
-  }
-
 }

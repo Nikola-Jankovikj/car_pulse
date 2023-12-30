@@ -35,7 +35,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Service Info'),
+        title: Text('Add Service'),
       ),
       body: Center(
         child: Padding(
@@ -47,15 +47,15 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                   columnSpacing: 20.0,
                   dividerThickness: 1.0,
                   decoration: BoxDecoration(
-                    border: Border.all(),
-                  ),
+                      border: Border.all(),
+                      borderRadius: BorderRadius.circular(10.0)),
                   columns: [
                     DataColumn(label: Text('Attribute')),
                     DataColumn(label: Text('Value')),
                   ],
                   rows: [
                     DataRow(cells: [
-                      const DataCell(Text('Date Service')),
+                      const DataCell(Text('Service Date')),
                       DataCell(OutlinedButton(
                         onPressed: () => _selectDate(context),
                         child: Text(pickedDate != null
@@ -70,7 +70,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                           child: TextField(
                             keyboardType: TextInputType.number,
                             controller: odomController,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               hintText: 'Enter Odometer',
                             ),
                           ),
@@ -83,7 +83,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                         Container(
                           child: TextField(
                             controller: displayController,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               hintText: 'Enter Display Text',
                             ),
                           ),
@@ -96,7 +96,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                         Container(
                           child: TextField(
                             controller: descriptionController,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               hintText: 'Enter Description',
                             ),
                           ),
@@ -154,7 +154,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                           child: TextField(
                             keyboardType: TextInputType.number,
                             controller: priceController,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               hintText: 'Enter Price',
                             ),
                           ),
@@ -166,8 +166,15 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _saveServiceInfo,
-                  child: Text('Save Service Info'),
-                ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      side: BorderSide(color: Colors.black, width: 2.0),
+                    ),
+                  ),
+                  child: const Text('Save Service', style: TextStyle(color: Colors.white),),
+                )
               ],
             ),
           ),
@@ -195,19 +202,17 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
     // Create a ServiceInfo object based on input data
     final ServiceInfo newService = ServiceInfo(
       dateService: DateTime.parse(dateController.text),
-      // Adjust as needed
       odometer: int.parse(odomController.text),
-      // Adjust as needed
       display: displayController.text,
       description: descriptionController.text,
       category: selectedCategory,
       condition: selectedCondition,
-      price: double.parse(priceController.text), // Adjust as needed
+      price: double.parse(priceController.text),
     );
 
     if (cars.isNotEmpty) {
       int length = cars.length;
-      print("Cars lenght: $length");
+      print("Cars length: $length");
     }
 
     for (var car in cars) {
@@ -216,7 +221,10 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
         //car.serviceRecords.removeRange(0, car.serviceRecords.length);
         car.serviceRecords.add(newService);
         int length = car.serviceRecords.length;
+        int lengthCars = cars.length;
         print("length: $length");
+        print("Cars length: $lengthCars");
+
       }
     }
     // Save updated cars to SharedPreferences
