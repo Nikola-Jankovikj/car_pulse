@@ -1,12 +1,10 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:car_pulse/repository/car_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../model/car.dart';
-import '../service/car_service.dart';
 
 class CarDetailScreen extends StatefulWidget {
   final Car car; // Pass carId instead of the entire Car object
@@ -73,10 +71,10 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
             child: Row(
               children: [
                 Expanded(
-                  child: _buildSquareBlock("Block 1", Colors.blue),
+                  child: _buildSquareBlock("Service History", Image.asset('icons/service-icon.png')),
                 ),
                 Expanded(
-                  child: _buildSquareBlock("Block 2", Colors.green),
+                  child: _buildSquareBlock("Modification Planner", Image.asset('icons/turbo.png')),
                 ),
               ],
             ),
@@ -85,10 +83,10 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
             child: Row(
               children: [
                 Expanded(
-                  child: _buildSquareBlock("Block 3", Colors.orange),
+                  child: _buildSquareBlock("Upcoming Service", Image.asset('icons/canister.png')),
                 ),
                 Expanded(
-                  child: _buildSquareBlock("Block 4", Colors.red),
+                  child: _buildSquareBlock("Edit Stats", Image.asset('icons/bar-chart.png')),
                 ),
               ],
             ),
@@ -98,23 +96,38 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
     );
   }
 
-  Widget _buildSquareBlock(String label, Color color) {
+  Widget _buildSquareBlock(String label, Image image) {
     return GestureDetector(
       onTap: () {
         // Handle block click as needed
         print("Clicked $label");
       },
       child: Container(
-        color: color,
+        margin: EdgeInsets.all(8), // Adjust the padding as needed
         child: Center(
-          child: Text(
-            label,
-            style: const TextStyle(color: Colors.white),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 80, // Adjust the height as needed for the image
+                width: 80, // Adjust the width as needed for the image
+                child: image,
+              ),
+              SizedBox(height: 8),
+              Text(
+                label,
+                style: const TextStyle(color: Colors.black, fontSize: 16), // Adjust the fontSize as needed for the text
+              ),
+            ],
           ),
         ),
       ),
     );
   }
+
+
+
+
 
   Future<void> _showImagePickerDialog() async {
     return showDialog(
