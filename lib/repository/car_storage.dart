@@ -9,7 +9,7 @@ class CarStorage {
 
   Future<void> saveCarInfo(List<Car> cars) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> carData = cars.map((exam) => carToJson(exam)).toList();
+    List<String> carData = cars.map((car) => carToJson(car)).toList();
     await prefs.setStringList(_keyCar, carData);
   }
 
@@ -24,21 +24,12 @@ class CarStorage {
   }
 
   String carToJson(Car car) {
-    Map<String, dynamic> examMap = {
-      'make': car.make,
-      'model': car.model,
-      'serviceRecords': serviceInfoListToJson(car.serviceRecords),
-    };
-    return json.encode(examMap);
+    return json.encode(car.toJson());
   }
 
   Car carFromJson(String data) {
     Map<String, dynamic> carMap = json.decode(data);
-    return Car(
-      make: carMap['make'],
-      model: carMap['model'],
-      serviceRecords: serviceInfoListFromJson(carMap['serviceRecords']),
-    );
+    return Car.fromJson(carMap);
   }
 
   List<Map<String, dynamic>> serviceInfoListToJson(List<ServiceInfo> serviceRecords) {
