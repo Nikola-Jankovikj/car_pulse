@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../model/car.dart';
 import '../service/car_service.dart';
 import 'car_detail_screen.dart';
@@ -60,41 +59,59 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildCarCard(Car car) {
-    return GestureDetector(
-      onTap: () async {
-        await _onCarTap(context, car);
-        // Reload cars after updating the car
-        await loadCars();
+    return Dismissible(
+      key: Key(car.id!), // Use a unique key for each item
+      onDismissed: (direction) async {
+        // Remove the item from the data source
+        setState(() {
+          cars.remove(car);
+        });
+        // Remove the item from storage
+        await CarService().deleteCar(car);
       },
-      child: Card(
-        margin: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            if (car.photoBase64 != null && car.photoBase64!.isNotEmpty)
-              Image.memory(
-                base64Decode(car.photoBase64!),
-                height: 150,
-                width: double.infinity,
-                fit: BoxFit.cover,
+      background: Container(
+        color: Colors.red, // Background color when swiping
+        child: const ListTile(
+          leading: Icon(Icons.delete, color: Colors.white),
+        ),
+      ),
+      child: GestureDetector(
+        onTap: () async {
+          await _onCarTap(context, car);
+          // Reload cars after updating the car
+          await loadCars();
+        },
+        child: Card(
+          margin: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              if (car.photoBase64 != null && car.photoBase64!.isNotEmpty)
+                Image.memory(
+                  base64Decode(car.photoBase64!),
+                  height: 150,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "${car.make} ${car.model}",
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                ),
               ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "${car.make} ${car.model}",
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
+
 
 
   Future<void> _onCarTap(BuildContext context, Car car) async {
