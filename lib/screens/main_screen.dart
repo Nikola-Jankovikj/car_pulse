@@ -48,7 +48,11 @@ class _MainScreenState extends State<MainScreen> {
           // Reload cars after adding a new one
           await loadCars();
         },
-        child: const Icon(Icons.add),
+        backgroundColor: Colors.green, // Button background color
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0), // Rounded corners
+        ),
+        child: const Icon(Icons.add, color: Colors.white,),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
