@@ -27,7 +27,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
     switch (permissionStatus) {
       case PermissionStatus.granted:
         final position = await _getCurrentLocation();
-        final apiUrl = 'https://api.weatherapi.com/v1/forecast.json?key=$apiKey&q=${position.latitude},${position.longitude}&days=3';
+        final apiUrl =
+            'https://api.weatherapi.com/v1/forecast.json?key=$apiKey&q=${position.latitude},${position.longitude}&days=3';
 
         final response = await http.get(Uri.parse(apiUrl));
 
@@ -87,8 +88,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
     );
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,51 +106,66 @@ class _WeatherScreenState extends State<WeatherScreen> {
             final location = forecast['location'];
             final forecastDays = forecast['forecast']['forecastday'];
 
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
+            // Check weather conditions
+            bool canWashCar = forecastDays.every((day) =>
+            day['day']['condition']['text'].toLowerCase() == 'sunny');
+
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
                     '${location['name']}, ${location['region']}, ${location['country']}',
                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 8),
-                  for (var day in forecastDays)
-                    ListTile(
-                      title: Text('Date: ${day['date']}'),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Max Temperature: ${day['day']['maxtemp_c']}°C'),
-                          Text('Min Temperature: ${day['day']['mintemp_c']}°C'),
-                          Text('Condition: ${day['day']['condition']['text']}'),
-                        ],
-                      ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: forecastDays.length,
+                    itemBuilder: (context, index) {
+                      var day = forecastDays[index];
+                      return Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Card(
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          child: ListTile(
+                            title: Text('Date: ${day['date']}'),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Max Temperature: ${day['day']['maxtemp_c']}°C'),
+                                Text('Min Temperature: ${day['day']['mintemp_c']}°C'),
+                                Text('Condition: ${day['day']['condition']['text']}'),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(16.0),
+                  color: canWashCar ? Colors.green : Colors.red,
+                  child: Text(
+                    canWashCar
+                        ? 'You can wash the car! There is no rain expected in the next 3 days.'
+                        : 'Caution: Rain or snow is expected in the next 3 days.',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
-                ],
-              ),
+                  ),
+                ),
+              ],
             );
           }
         },
       ),
-    );
-  }
-}
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Weather App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const WeatherScreen(),
     );
   }
 }
