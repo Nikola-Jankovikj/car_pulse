@@ -4,23 +4,16 @@ import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class WeatherScreen extends StatefulWidget {
-  const WeatherScreen({Key? key}) : super(key: key);
+class WeatherDataSingleton {
+  static final WeatherDataSingleton _instance = WeatherDataSingleton._internal();
 
-  @override
-  _WeatherScreenState createState() => _WeatherScreenState();
-}
-
-class _WeatherScreenState extends State<WeatherScreen> {
-  late Future<Map<String, dynamic>> weatherData;
-
-  @override
-  void initState() {
-    super.initState();
-    weatherData = _getWeatherData();
+  factory WeatherDataSingleton() {
+    return _instance;
   }
 
-  Future<Map<String, dynamic>> _getWeatherData() async {
+  WeatherDataSingleton._internal();
+
+  Future<Map<String, dynamic>> getWeatherData() async {
     final apiKey = '53971e78a15c489cbd5151551233112'; // Replace with your weatherapi.com API key
     final permissionStatus = await _requestLocationPermission();
 
@@ -38,10 +31,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
           throw Exception('Failed to load weather data');
         }
       case PermissionStatus.denied:
-        _showPermissionDeniedDialog();
         throw Exception('Location permission denied');
       case PermissionStatus.permanentlyDenied:
-        _showPermissionDeniedDialog();
         throw Exception('Location permission permanently denied');
       default:
         throw Exception('Unexpected permission status');
@@ -62,30 +53,22 @@ class _WeatherScreenState extends State<WeatherScreen> {
       throw Exception('Failed to get current location: $e');
     }
   }
+}
 
-  void _showPermissionDeniedDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Location Permission Required'),
-        content: const Text('Please grant location permission to access weather information.'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Close the dialog
-            },
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Close the dialog
-              openAppSettings(); // Open app settings for the user to grant permission
-            },
-            child: const Text('Open Settings'),
-          ),
-        ],
-      ),
-    );
+class WeatherScreen extends StatefulWidget {
+  const WeatherScreen({Key? key}) : super(key: key);
+
+  @override
+  _WeatherScreenState createState() => _WeatherScreenState();
+}
+
+class _WeatherScreenState extends State<WeatherScreen> {
+  late Future<Map<String, dynamic>> weatherData;
+
+  @override
+  void initState() {
+    super.initState();
+    weatherData = WeatherDataSingleton().getWeatherData();
   }
 
   @override
@@ -106,7 +89,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
             final location = forecast['location'];
             final forecastDays = forecast['forecast']['forecastday'];
 
-            // Check weather conditions
             bool canWashCar = forecastDays.every((day) =>
             day['day']['condition']['text'].toLowerCase() == 'sunny');
 
@@ -154,7 +136,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     canWashCar
                         ? 'You can wash the car! There is no rain expected in the next 3 days.'
                         : 'Caution: Rain or snow is expected in the next 3 days.',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
