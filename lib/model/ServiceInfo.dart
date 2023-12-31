@@ -1,6 +1,5 @@
-import 'dart:convert';
-import '../enums/ConditionEnum.dart';
 import '../enums/CategoryEnum.dart';
+import '../enums/ConditionEnum.dart';
 
 class ServiceInfo {
   final DateTime dateService;
@@ -51,5 +50,13 @@ class ServiceInfo {
 
   static ConditionEnum getConditionEnum(String value) {
     return ConditionEnum.values.firstWhere((e) => e.toString() == value);
+  }
+
+  static List<Map<String, dynamic>> serviceInfoListToJson(List<ServiceInfo> serviceRecords) {
+    return serviceRecords.map((service) => service.toJson()).toList();
+  }
+
+  static List<ServiceInfo> serviceInfoListFromJson(List<dynamic> jsonList) {
+    return jsonList.map((json) => ServiceInfo.fromJson(json)).toList();
   }
 }
