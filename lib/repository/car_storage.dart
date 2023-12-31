@@ -39,4 +39,17 @@ class CarStorage {
   List<ServiceInfo> serviceInfoListFromJson(List<dynamic> jsonList) {
     return jsonList.map((json) => ServiceInfo.fromJson(json)).toList();
   }
+
+  Future<List<Car>> deleteCar(Car car) async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var carData = prefs.getStringList(_keyCar);
+    if (carData != null) {
+      List<Car> cars = carData.map((data) => carFromJson(data)).where((element) => element.id != car.id).toList();
+      List<String> newCarData = cars.map((car) => carToJson(car)).toList();
+      await prefs.setStringList(_keyCar, newCarData);
+      return cars;
+    } else {
+      return [];
+    }
+  }
 }

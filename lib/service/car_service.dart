@@ -1,4 +1,3 @@
-import '../../model/ServiceInfo.dart';
 import '../../model/car.dart';
 import '../repository/car_storage.dart';
 
@@ -32,6 +31,10 @@ class CarService {
   Future<Car> loadCar(String carId) async {
     List<Car> cars = await _carStorage.getCarInfo();
     return cars.firstWhere((car) => car.id == carId);
+  }
+
+  Future<List<Car>> deleteCar(Car car) {
+    return _carStorage.deleteCar(car);
   }
 
 }
