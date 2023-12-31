@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:car_pulse/screens/weather_screen.dart';
 import 'package:flutter/material.dart';
 import '../model/car.dart';
 import '../service/car_service.dart';
@@ -28,11 +29,23 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("My Garage"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.cloud),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => WeatherScreen()), // Navigate to WeatherScreen
+              );
+            },
+          ),
+        ],
       ),
       body: Center(
         child: ListView.builder(
