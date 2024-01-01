@@ -9,7 +9,7 @@ typedef OnServiceAddedCallback = Function(ServiceInfo);
 
 class AddServiceScreen extends StatefulWidget {
   final Car selectedCar;
-  final OnServiceAddedCallback onServiceAdded; // Define the callback
+  final Function onServiceAdded; // Define the callback
 
   const AddServiceScreen({
     Key? key,
@@ -327,7 +327,8 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
     carsStorage.saveCarInfo(cars);
 
     // Navigate to the target screen after saving
-    Navigator.of(context).pop(newService);
+    widget.onServiceAdded(newService);
+    Navigator.pop(context);
   }
 
   void loadCarData() async {

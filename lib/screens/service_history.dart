@@ -1,176 +1,5 @@
-// import 'dart:convert';
-// import 'dart:typed_data';
-// import 'package:car_pulse/screens/car_detail_screen.dart';
-// import 'package:car_pulse/screens/serviceDetails.dart';
-// import 'package:flutter/material.dart';
-// import '../model/ServiceInfo.dart';
-// import '../model/car.dart';
-// import 'addServiceInfo.dart';
-//
-// class ServiceHistoryScreen extends StatefulWidget {
-//   final Car selectedCar;
-//
-//   ServiceHistoryScreen({required this.selectedCar});
-//
-//   @override
-//   _ServiceHistoryScreenState createState() => _ServiceHistoryScreenState();
-// }
-//
-// class _ServiceHistoryScreenState extends State<ServiceHistoryScreen> {
-//   @override
-//   void initState() {
-//     super.initState();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Service Book'),
-//         leading: IconButton(
-//           icon: const Icon(Icons.arrow_back),
-//           onPressed: () {
-//             Navigator.push(
-//               context,
-//               MaterialPageRoute(builder: (context) => CarDetailScreen(car: widget.selectedCar, onPhotoChanged: (Uint8List) {})),
-//             );
-//           },
-//         ),
-//       ),
-//       body: ListView(
-//         children: [
-//           Column(
-//             crossAxisAlignment: CrossAxisAlignment.stretch,
-//             children: [
-//               Container(
-//                 height: 200,
-//                 child: Image.memory(
-//                   widget.selectedCar.photoBase64 != null ? base64Decode(widget.selectedCar.photoBase64!) : Uint8List(0),
-//                   fit: BoxFit.cover,
-//                 ),
-//               ),
-//               SizedBox(height: 20),
-//               Center(
-//                 child: Text(
-//                   "${widget.selectedCar.make} ${widget.selectedCar.model}",
-//                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-//                 ),
-//               ),
-//               SizedBox(height: 20),
-//               Center(
-//                 child: SingleChildScrollView(
-//                   scrollDirection: Axis.horizontal,
-//                   child: Container(
-//                     padding: EdgeInsets.all(16.0),
-//                     decoration: BoxDecoration(
-//                       border: Border.all(),
-//                       borderRadius: BorderRadius.circular(10.0),
-//                       color: Colors.white,
-//                     ),
-//                     child: DataTable(
-//                       columnSpacing: 20.0,
-//                       columns: const [
-//                         DataColumn(label: Text('Display Text')),
-//                         DataColumn(label: Text('Action')),
-//                       ],
-//                       rows: widget.selectedCar.serviceRecords.map((serviceRecord) {
-//                         return DataRow(cells: [
-//                           DataCell(
-//                             GestureDetector(
-//                               onTap: () {
-//                                 _showFullStringDialog(context, serviceRecord.display);
-//                               },
-//                               child: Tooltip(
-//                                 message: serviceRecord.display,
-//                                 child: Text(
-//                                   serviceRecord.display.length > 20 ? '${serviceRecord.display.substring(0, 20)}...' : serviceRecord.display,
-//                                   softWrap: true,
-//                                 ),
-//                               ),
-//                             ),
-//                           ),
-//                           DataCell(
-//                             ElevatedButton(
-//                               onPressed: () {
-//                                 _navigateToServiceInfoDetails(serviceRecord);
-//                               },
-//                               style: ElevatedButton.styleFrom(
-//                                 backgroundColor: Colors.white,
-//                                 shape: RoundedRectangleBorder(
-//                                   borderRadius: BorderRadius.circular(10.0),
-//                                 ),
-//                               ),
-//                               child: const Text('Show', style: TextStyle(color: Colors.grey)),
-//                             ),
-//                           ),
-//                         ]);
-//                       }).toList(),
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ],
-//       ),
-//       floatingActionButton: Padding(
-//         padding: EdgeInsets.all(16.0),
-//         child: FloatingActionButton(
-//           onPressed: () {
-//             Navigator.push(
-//               context,
-//               MaterialPageRoute(builder: (context) => AddServiceScreen(selectedCar: widget.selectedCar)),
-//             );
-//           },
-//           backgroundColor: Colors.green,
-//           shape: RoundedRectangleBorder(
-//             borderRadius: BorderRadius.circular(30.0),
-//           ),
-//           child: const Icon(Icons.add, color: Colors.white),
-//         ),
-//       ),
-//     );
-//   }
-//
-//   void _showFullStringDialog(BuildContext context, String fullString) {
-//     showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//           title: const Text('Full Text'),
-//           content: SingleChildScrollView(
-//             child: ListBody(
-//               children: [
-//                 Text(fullString),
-//               ],
-//             ),
-//           ),
-//           actions: [
-//             TextButton(
-//               onPressed: () {
-//                 Navigator.of(context).pop();
-//               },
-//               child: const Text('Close'),
-//             ),
-//           ],
-//         );
-//       },
-//     );
-//   }
-//
-//   void _navigateToServiceInfoDetails(ServiceInfo serviceInfo) {
-//     Navigator.push(
-//       context,
-//       MaterialPageRoute(
-//         builder: (context) => ServiceInfoDetails(serviceInfo: serviceInfo),
-//       ),
-//     );
-//   }
-// }
-
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:car_pulse/screens/car_detail_screen.dart';
 import 'package:car_pulse/screens/serviceDetails.dart';
 import 'package:car_pulse/service/car_service.dart';
 import 'package:flutter/material.dart';
@@ -307,20 +136,21 @@ class _ServiceHistoryScreenState extends State<ServiceHistoryScreen> {
       floatingActionButton: Padding(
         padding: EdgeInsets.all(16.0),
         child: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
+          onPressed: () async {
+            await Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AddServiceScreen(
-                        selectedCar: currCar,
-                        onServiceAdded: (newService) {
-                          setState(() async {
-                            currCar.serviceRecords.add(newService);
-                            await carService.saveCar(currCar);
-                          });
-
-                        },
-                      )),
+                builder: (context) => AddServiceScreen(
+                  selectedCar: currCar,
+                  onServiceAdded: (ServiceInfo newService) {
+                    // This function will be called when a new service is added
+                    // Use the newService callback to update currCar
+                    setState(() {
+                      //currCar.serviceRecords.add(newService);
+                    });
+                  },
+                ),
+              ),
             );
           },
           backgroundColor: Colors.green,
@@ -362,23 +192,6 @@ class _ServiceHistoryScreenState extends State<ServiceHistoryScreen> {
   void _navigateToServiceInfoScreen(ServiceInfo serviceInfo) async{
     await Navigator.push(context,
     MaterialPageRoute(builder: (context) => ServiceInfoDetails(serviceInfo: serviceInfo)));
-  }
-
-  void _navigateToAddServiceScreen() async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AddServiceScreen(
-          selectedCar: widget.selectedCar,
-          onServiceAdded: (newService) {
-            setState(() async{
-              currCar.serviceRecords.add(newService);
-              await carService.saveCar(currCar);
-            });
-          }, // Pass the callback function
-        ),
-      ),
-    );
   }
 
   void _deleteServiceInfo(ServiceInfo serviceRecord) {

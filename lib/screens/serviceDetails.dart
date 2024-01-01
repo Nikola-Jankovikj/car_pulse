@@ -52,7 +52,7 @@ class ServiceInfoDetails extends StatelessWidget {
                   ]),
                   DataRow(cells: [
                     DataCell(Text('Date')),
-                    DataCell(Text('${serviceInfo.dateService}')),
+                    DataCell(Text('${serviceInfo.dateService.day}.${serviceInfo.dateService.month}.${serviceInfo.dateService.year}')),
                   ]),
                   DataRow(cells: [
                     DataCell(Text('Odometer')),
