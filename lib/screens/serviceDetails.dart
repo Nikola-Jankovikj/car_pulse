@@ -10,7 +10,7 @@ class ServiceInfoDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Service Details'),
+        title: const Text('Service Details'),
       ),
       body: Container(
         color: Colors.grey[400], // Screen background color
@@ -52,7 +52,7 @@ class ServiceInfoDetails extends StatelessWidget {
                   ]),
                   DataRow(cells: [
                     DataCell(Text('Date')),
-                    DataCell(Text('${serviceInfo.dateService}')),
+                    DataCell(Text('${serviceInfo.dateService.day}.${serviceInfo.dateService.month}.${serviceInfo.dateService.year}')),
                   ]),
                   DataRow(cells: [
                     DataCell(Text('Odometer')),
@@ -116,7 +116,7 @@ class ServiceInfoDetails extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         );
