@@ -1,21 +1,32 @@
 import 'package:car_pulse/repository/car_storage.dart';
-import 'package:car_pulse/screens/service_history.dart';
 import 'package:flutter/material.dart';
 import '../enums/CategoryEnum.dart';
 import '../enums/ConditionEnum.dart';
 import '../model/car.dart';
 import '../model/ServiceInfo.dart';
 
+typedef OnServiceAddedCallback = Function(ServiceInfo);
+
 class AddServiceScreen extends StatefulWidget {
+  final Car selectedCar;
+  final Function onServiceAdded; // Define the callback
+
+  const AddServiceScreen({
+    Key? key,
+    required this.selectedCar,
+    required this.onServiceAdded, // Include the callback in the constructor
+  }) : super(key: key);
+
   @override
   _AddServiceScreenState createState() => _AddServiceScreenState();
 }
 
 class _AddServiceScreenState extends State<AddServiceScreen> {
+
   List<Car> cars = [];
   CarStorage carsStorage = CarStorage();
 
-  Car selectedCar = Car(make: "Porsche", model: "911");
+  //Car selectedCar = Car(make: "Porsche", model: "911");
   final TextEditingController dateController = TextEditingController();
   final TextEditingController displayController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
@@ -24,6 +35,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
   CategoryEnum selectedCategory = CategoryEnum.RegularService;
   ConditionEnum selectedCondition = ConditionEnum.New;
   DateTime? pickedDate;
+
 
   @override
   void initState() {
@@ -36,17 +48,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Service'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ServiceHistoryScreen(
-                          selectedCar: cars[0],
-                        )));
-          },
-        ),
+
       ),
       body: Container(
         color: Colors.grey[400], // Light gray color for the screen background
@@ -272,7 +274,34 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
     }
   }
 
-  void _saveServiceInfo() async {
+  void _saveServiceInfo() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Save Service?'),
+          content: const Text('Do you want to save this service?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                _saveAndRedirect(); // Save the service and navigate to a different page
+              },
+              child: const Text('Yes'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('No'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _saveAndRedirect()  {
     // Create a ServiceInfo object based on input data
     final ServiceInfo newService = ServiceInfo(
       dateService: DateTime.parse(dateController.text),
@@ -284,25 +313,22 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
       price: double.parse(priceController.text),
     );
 
-    if (cars.isNotEmpty) {
-      int length = cars.length;
-      print("Cars length: $length");
-    }
-
+    // Save the new service to the selected car's service records
     for (var car in cars) {
-      if (car.make == selectedCar.make && car.model == selectedCar.model) {
-        // To reset service records
-        //car.serviceRecords.removeRange(0, car.serviceRecords.length);
-
+      if (car.make == widget.selectedCar.make &&
+          car.model == widget.selectedCar.model) {
         car.serviceRecords.add(newService);
-        int length = car.serviceRecords.length;
-        int lengthCars = cars.length;
-        print("length: $length");
-        print("Cars length: $lengthCars");
+        widget.selectedCar.serviceRecords.add(newService);
+        break;
       }
     }
-    // Save updated cars to SharedPreferences
-    await CarStorage().saveCarInfo(cars);
+
+    // Save the updated cars to SharedPreferences
+    carsStorage.saveCarInfo(cars);
+
+    // Navigate to the target screen after saving
+    widget.onServiceAdded(newService);
+    Navigator.pop(context);
   }
 
   void loadCarData() async {

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:car_pulse/screens/service_history.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -101,6 +102,14 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
       onTap: () {
         // Handle block click as needed
         print("Clicked $label");
+        if (label == "Service History"){
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ServiceHistoryScreen(
+                    selectedCar: widget.car,
+                  )));
+        }
       },
       child: Container(
         margin: EdgeInsets.all(8), // Adjust the padding as needed
