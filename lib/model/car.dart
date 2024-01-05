@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'package:uuid/uuid.dart';
-
 import 'ServiceInfo.dart';
+import 'ModificationInfo.dart';
 
 class Car {
   final String? id;
   final String make;
   final String model;
   final List<ServiceInfo> serviceRecords;
+  final List<ModificationInfo> modifications;
   String? photoBase64;
 
   static const String defaultPhotoBase64 =
@@ -18,8 +19,10 @@ class Car {
     required this.make,
     required this.model,
     List<ServiceInfo>? serviceRecords,
+    List<ModificationInfo>? modifications,
     String? photoBase64,
-  })   : serviceRecords = serviceRecords ?? [],
+  })  : serviceRecords = serviceRecords ?? [],
+        modifications = modifications ?? [],
         photoBase64 = photoBase64 ?? defaultPhotoBase64,
         id = id ?? const Uuid().v4();
 
@@ -28,8 +31,11 @@ class Car {
       'id': id,
       'make': make,
       'model': model,
-      'serviceRecords': serviceRecords.map((record) => record.toJson()).toList(),
-      'photoBase64': photoBase64, // Add photoBase64 to the JSON representation
+      'serviceRecords':
+          serviceRecords.map((record) => record.toJson()).toList(),
+      'modifications':
+          modifications.map((modification) => modification.toJson()).toList(),
+      'photoBase64': photoBase64,
     };
   }
 
@@ -39,10 +45,15 @@ class Car {
       make: json['make'],
       model: json['model'],
       serviceRecords: (json['serviceRecords'] as List<dynamic>?)
-          ?.map((recordJson) => ServiceInfo.fromJson(recordJson))
-          .toList() ??
-          [], // Deserialize ServiceInfo objects from JSON
-      photoBase64: json['photoBase64'], // Initialize photoBase64 from JSON
+              ?.map((recordJson) => ServiceInfo.fromJson(recordJson))
+              .toList() ??
+          [],
+      modifications: (json['modifications'] as List<dynamic>?)
+              ?.map((modificationJson) =>
+                  ModificationInfo.fromJson(modificationJson))
+              .toList() ??
+          [],
+      photoBase64: json['photoBase64'],
     );
   }
 

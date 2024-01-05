@@ -29,7 +29,6 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +40,9 @@ class _MainScreenState extends State<MainScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => WeatherScreen()), // Navigate to WeatherScreen
+                MaterialPageRoute(
+                    builder: (context) =>
+                        WeatherScreen()), // Navigate to WeatherScreen
               );
             },
           ),
@@ -65,7 +66,10 @@ class _MainScreenState extends State<MainScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0), // Rounded corners
         ),
-        child: const Icon(Icons.add, color: Colors.white,),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
@@ -116,7 +120,8 @@ class _MainScreenState extends State<MainScreen> {
                   children: [
                     Text(
                       "${car.make} ${car.model}",
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                   ],
@@ -129,8 +134,6 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-
-
   Future<void> _onCarTap(BuildContext context, Car car) async {
     // Navigate to a new screen and pass the Car object
     await Navigator.push(
@@ -140,7 +143,8 @@ class _MainScreenState extends State<MainScreen> {
           car: car,
           onPhotoChanged: (newPhoto) async {
             // Update the photo in the current car list
-            final updatedCar = cars.firstWhere((element) => element.id == car.id);
+            final updatedCar =
+                cars.firstWhere((element) => element.id == car.id);
             updatedCar.photoBase64 = base64Encode(newPhoto);
             await CarService().saveCar(updatedCar);
 
