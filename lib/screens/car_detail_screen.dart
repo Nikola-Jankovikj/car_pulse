@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:car_pulse/screens/edit_history.dart';
+import 'package:car_pulse/screens/editDetails.dart';
+import 'package:car_pulse/screens/modification_history.dart';
 import 'package:car_pulse/screens/modification_planner.dart';
 import 'package:car_pulse/screens/service_history.dart';
 import 'package:flutter/material.dart';
@@ -122,7 +125,16 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ModificationPlannerScreen(
+              builder: (context) => ModificationHistoryScreen(
+                selectedCar: widget.car,
+              ),
+            ),
+          );
+        } else if (label == "Edit Stats") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EditHistoryScreen(
                 selectedCar: widget.car,
               ),
             ),
