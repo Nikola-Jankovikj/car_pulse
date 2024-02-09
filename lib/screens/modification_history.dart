@@ -83,13 +83,30 @@ class _ModificationHistoryScreenState extends State<ModificationHistoryScreen> {
                         DataColumn(label: Text('Delete')),
                       ],
                       rows: currCar.modificationRecords
-                          .map((modificationRecords) {
+                          .map((modificationRecord) {
                         return DataRow(cells: [
+                            DataCell(
+                            GestureDetector(
+                            onTap: () {
+                          _showFullStringDialog(
+                              context, modificationRecord.description);
+                        },
+                        child: Tooltip(
+                        message: modificationRecord.description,
+                        child: Text(
+                        modificationRecord.description.length > 15
+                        ? '${modificationRecord.description.substring(0, 15)}...'
+                            : modificationRecord.description,
+                        softWrap: true,
+                        ),
+                        ),
+                        ),
+                        ),
                           DataCell(
                             ElevatedButton(
                               onPressed: () {
                                 _navigateToModifcationInfoScreen(
-                                    modificationRecords);
+                                    modificationRecord);
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
@@ -104,11 +121,11 @@ class _ModificationHistoryScreenState extends State<ModificationHistoryScreen> {
                           DataCell(
                             IconButton(
                               onPressed: () {
-                                _deleteModificationInfo(modificationRecords);
+                                _deleteModificationInfo(modificationRecord);
                               },
-                              icon: Icon(Icons.delete, color: Colors.red),
+                              icon: const Icon(Icons.delete, color: Colors.red),
                             ),
-                          ),
+                          )
                         ]);
                       }).toList(),
                     ),
