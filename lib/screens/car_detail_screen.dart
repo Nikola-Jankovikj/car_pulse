@@ -1,6 +1,10 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:car_pulse/screens/edit_history.dart';
+import 'package:car_pulse/screens/editDetails.dart';
+import 'package:car_pulse/screens/modification_history.dart';
+import 'package:car_pulse/screens/modification_planner.dart';
 import 'package:car_pulse/screens/service_history.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,14 +15,15 @@ class CarDetailScreen extends StatefulWidget {
   final Car car; // Pass carId instead of the entire Car object
   final Function(Uint8List) onPhotoChanged;
 
-  const CarDetailScreen({Key? key, required this.car, required this.onPhotoChanged}) : super(key: key);
+  const CarDetailScreen(
+      {Key? key, required this.car, required this.onPhotoChanged})
+      : super(key: key);
 
   @override
   _CarDetailScreenState createState() => _CarDetailScreenState();
 }
 
 class _CarDetailScreenState extends State<CarDetailScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -47,7 +52,9 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
             child: SizedBox(
               height: 200,
               child: Image.memory(
-                widget.car.photoBase64 != null ? base64Decode(widget.car.photoBase64!) : Uint8List(0),
+                widget.car.photoBase64 != null
+                    ? base64Decode(widget.car.photoBase64!)
+                    : Uint8List(0),
                 fit: BoxFit.cover,
               ),
             ),
@@ -60,7 +67,8 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
               children: [
                 Text(
                   "${widget.car.make} ${widget.car.model}",
-                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
                 // Add more text details here as needed
@@ -72,10 +80,12 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
             child: Row(
               children: [
                 Expanded(
-                  child: _buildSquareBlock("Service History", Image.asset('icons/service-icon.png')),
+                  child: _buildSquareBlock(
+                      "Service History", Image.asset('icons/service-icon.png')),
                 ),
                 Expanded(
-                  child: _buildSquareBlock("Modification Planner", Image.asset('icons/turbo.png')),
+                  child: _buildSquareBlock(
+                      "Modification Planner", Image.asset('icons/turbo.png')),
                 ),
               ],
             ),
@@ -84,10 +94,12 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
             child: Row(
               children: [
                 Expanded(
-                  child: _buildSquareBlock("Upcoming Service", Image.asset('icons/canister.png')),
+                  child: _buildSquareBlock(
+                      "Upcoming Service", Image.asset('icons/canister.png')),
                 ),
                 Expanded(
-                  child: _buildSquareBlock("Edit Stats", Image.asset('icons/bar-chart.png')),
+                  child: _buildSquareBlock(
+                      "Edit Stats", Image.asset('icons/bar-chart.png')),
                 ),
               ],
             ),
@@ -102,13 +114,31 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
       onTap: () {
         // Handle block click as needed
         print("Clicked $label");
-        if (label == "Service History"){
+        if (label == "Service History") {
           Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => ServiceHistoryScreen(
-                    selectedCar: widget.car,
-                  )));
+                        selectedCar: widget.car,
+                      )));
+        } else if (label == "Modification Planner") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ModificationHistoryScreen(
+                selectedCar: widget.car,
+              ),
+            ),
+          );
+        } else if (label == "Edit Stats") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EditHistoryScreen(
+                selectedCar: widget.car,
+              ),
+            ),
+          );
         }
       },
       child: Container(
@@ -125,7 +155,9 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
               SizedBox(height: 8),
               Text(
                 label,
-                style: const TextStyle(color: Colors.black, fontSize: 16), // Adjust the fontSize as needed for the text
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 16), // Adjust the fontSize as needed for the text
               ),
             ],
           ),
@@ -133,10 +165,6 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
       ),
     );
   }
-
-
-
-
 
   Future<void> _showImagePickerDialog() async {
     return showDialog(
@@ -184,5 +212,4 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
   Future<void> saveCarPhoto(Uint8List pickedImageBytes) async {
     widget.onPhotoChanged(pickedImageBytes); // Call the callback function
   }
-
 }
