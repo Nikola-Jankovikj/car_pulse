@@ -1,10 +1,6 @@
-import 'dart:convert';
-import 'dart:typed_data';
 import 'package:car_pulse/model/EditInfo.dart';
-import 'package:car_pulse/screens/editDetails.dart';
 import 'package:car_pulse/service/car_service.dart';
 import 'package:flutter/material.dart';
-import '../model/EditInfo.dart';
 import '../model/car.dart';
 import 'addEditInfo.dart';
 
@@ -34,7 +30,7 @@ class _EditHistoryScreenState extends State<EditHistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Stats'),
+        title: const Text('Stats'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -42,84 +38,65 @@ class _EditHistoryScreenState extends State<EditHistoryScreen> {
           },
         ),
       ),
-      body: ListView(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Container(
-                height: 200,
-                child: Image.memory(
-                  currCar.photoBase64 != null
-                      ? base64Decode(currCar.photoBase64!)
-                      : Uint8List(0),
-                  fit: BoxFit.cover,
-                ),
+      body: Container(
+        color: Colors.grey[400], // Screen background color
+        child: Center(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Container(
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                border: Border.all(),
+                borderRadius: BorderRadius.circular(10.0),
+                color: Colors.white, // Table background color
               ),
-              SizedBox(height: 20),
-              Center(
-                child: Text(
-                  "${currCar.make} ${currCar.model}",
-                  style: const TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.bold),
-                ),
+              child: DataTable(
+                columnSpacing: 20.0,
+                columns: const [
+                  DataColumn(label: Text('Stat')),
+                  DataColumn(label: Text('Value')),
+                ],
+                rows: [
+                  DataRow(cells: [
+                    const DataCell(Text('Engine')),
+                    DataCell(Text(currCar.editRecord?.engine ?? 'Not set')),
+                  ]),
+                  DataRow(cells: [
+                    const DataCell(Text('HP')),
+                    DataCell(Text('${currCar.editRecord?.hp} Hp')),
+                  ]),
+                  DataRow(cells: [
+                    const DataCell(Text('Torque')),
+                    DataCell(Text('${currCar.editRecord?.torque} Nm')),
+                  ]),
+                  DataRow(cells: [
+                    const DataCell(Text('Fuel type')),
+                    DataCell(Text('${currCar.editRecord?.fuelType.name}')),
+                  ]),
+                  DataRow(cells: [
+                    const DataCell(Text('0-100')),
+                    DataCell(Text('${currCar.editRecord?.zeroToHundred} sec.')),
+                  ]),
+                  DataRow(cells: [
+                    const DataCell(Text('Max speed')),
+                    DataCell(Text('${currCar.editRecord?.maxSpeed} km/h')),
+                  ]),
+                  DataRow(cells: [
+                    const DataCell(Text('Kerb weight')),
+                    DataCell(Text('${currCar.editRecord?.kerbWeight} kg')),
+                  ]),
+                  DataRow(cells: [
+                    const DataCell(Text('Tire size')),
+                    DataCell(Text(currCar.editRecord?.tireSize ?? 'Not set')),
+                  ]),
+                ],
               ),
-              SizedBox(height: 20),
-              Center(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Container(
-                    padding: EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(),
-                      borderRadius: BorderRadius.circular(10.0),
-                      color: Colors.white,
-                    ),
-                    child: DataTable(
-                      columnSpacing: 20.0,
-                      columns: const [
-                        DataColumn(label: Text('Display Text')),
-                        DataColumn(label: Text('Action')),
-                        DataColumn(label: Text('Delete')),
-                      ],
-                      //so string
-                      rows: currCar.editRecords.map((editRecord) {
-                        return DataRow(cells: [
-                          DataCell(
-                            ElevatedButton(
-                              onPressed: () {
-                                _navigateToEditInfoScreen(editRecord);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                              ),
-                              child: const Text('Show',
-                                  style: TextStyle(color: Colors.grey)),
-                            ),
-                          ),
-                          DataCell(
-                            IconButton(
-                              onPressed: () {
-                                _deleteEditInfo(editRecord);
-                              },
-                              icon: Icon(Icons.delete, color: Colors.red),
-                            ),
-                          ),
-                        ]);
-                      }).toList(),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ],
+        ),
       ),
       floatingActionButton: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: FloatingActionButton(
           onPressed: () async {
             await Navigator.push(
@@ -130,7 +107,8 @@ class _EditHistoryScreenState extends State<EditHistoryScreen> {
                   onEditAdded: (EditInfo newEdit) {
                     // Use the newEdit callback to update currCar
                     setState(() {
-                      //currCar.editRecords.add(newEdit);
+                      //currCar.editRecord = newEdit;
+                      // print("HERE");
                     });
                   },
                 ),
@@ -171,20 +149,6 @@ class _EditHistoryScreenState extends State<EditHistoryScreen> {
         );
       },
     );
-  }
-
-  void _navigateToEditInfoScreen(EditInfo editInfo) async {
-    await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => EditInfoDetails(editInfo: editInfo)));
-  }
-
-  void _deleteEditInfo(EditInfo editRecord) {
-    setState(() {
-      widget.selectedCar.editRecords.remove(editRecord);
-      carService.saveCar(widget.selectedCar);
-    });
   }
 
   void loadCarData() async {

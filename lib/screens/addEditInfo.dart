@@ -38,13 +38,23 @@ class _AddEditScreenState extends State<AddEditScreen> {
   void initState() {
     super.initState();
     loadCarData();
+    // Initialize controllers with the current values
+    engineController.text = widget.selectedCar.editRecord?.engine ?? '';
+    hpController.text = widget.selectedCar.editRecord?.hp.toString() ?? '';
+    torqueController.text = widget.selectedCar.editRecord?.torque.toString() ?? '';
+    zeroToHundredController.text = widget.selectedCar.editRecord?.zeroToHundred.toString() ?? '';
+    maxSpeedController.text = widget.selectedCar.editRecord?.maxSpeed.toString() ?? '';
+    maxSpeedController.text = widget.selectedCar.editRecord?.maxSpeed.toString() ?? '';
+    kerbWeightController.text = widget.selectedCar.editRecord?.kerbWeight.toString() ?? '';
+    tireSizeController.text = widget.selectedCar.editRecord?.tireSize.toString() ?? '';
+    selectedFuelType = widget.selectedCar.editRecord?.fuelType ?? FuelType.Petrol;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit car info'),
+        title: const Text('Edit Stats'),
       ),
       body: Container(
         color: Colors.grey[400],
@@ -70,7 +80,7 @@ class _AddEditScreenState extends State<AddEditScreen> {
                       rows: [
                         // engine
                         DataRow(cells: [
-                          const DataCell(Text('engine')),
+                          const DataCell(Text('Engine type')),
                           DataCell(
                             SizedBox(
                               width: 200,
@@ -79,8 +89,7 @@ class _AddEditScreenState extends State<AddEditScreen> {
                                 controller: engineController,
                                 decoration: InputDecoration(
                                   hintText: 'Enter engine',
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 10),
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -92,18 +101,17 @@ class _AddEditScreenState extends State<AddEditScreen> {
 
                         // HP
                         DataRow(cells: [
-                          const DataCell(Text('hp')),
+                          const DataCell(Text('HP')),
                           DataCell(
                             SizedBox(
                               width: 200,
                               height: 50,
                               child: TextField(
-                                keyboardType: TextInputType.number,
                                 controller: hpController,
+                                keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   hintText: 'Enter horsepower',
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 10),
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -121,12 +129,11 @@ class _AddEditScreenState extends State<AddEditScreen> {
                               width: 200,
                               height: 50,
                               child: TextField(
-                                keyboardType: TextInputType.number,
                                 controller: torqueController,
+                                keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   hintText: 'Enter torque',
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 10),
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -137,6 +144,35 @@ class _AddEditScreenState extends State<AddEditScreen> {
                         ]),
 
                         // FuelType
+                        // DataRow(cells: [
+                        //   const DataCell(Text('FuelType')),
+                        //   DataCell(
+                        //     SizedBox(
+                        //       width: 200,
+                        //       height: 50,
+                        //       child: DropdownButton<FuelType>(
+                        //         value: selectedFuelType,
+                        //         onChanged: (FuelType? newValue) {
+                        //           if (newValue != null) {
+                        //             setState(() {
+                        //               selectedFuelType = newValue;
+                        //             });
+                        //           }
+                        //         },
+                        //         items: FuelType.values
+                        //             .map<DropdownMenuItem<FuelType>>(
+                        //           (FuelType value) {
+                        //             return DropdownMenuItem<FuelType>(
+                        //               value: value,
+                        //               child: Text(
+                        //                   value.toString().split('.').last),
+                        //             );
+                        //           },
+                        //         ).toList(),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ]),
                         DataRow(cells: [
                           const DataCell(Text('FuelType')),
                           DataCell(
@@ -144,7 +180,7 @@ class _AddEditScreenState extends State<AddEditScreen> {
                               width: 200,
                               height: 50,
                               child: DropdownButton<FuelType>(
-                                value: selectedFuelType,
+                                value: selectedFuelType, // Set initial value here
                                 onChanged: (FuelType? newValue) {
                                   if (newValue != null) {
                                     setState(() {
@@ -152,13 +188,11 @@ class _AddEditScreenState extends State<AddEditScreen> {
                                     });
                                   }
                                 },
-                                items: FuelType.values
-                                    .map<DropdownMenuItem<FuelType>>(
-                                  (FuelType value) {
+                                items: FuelType.values.map<DropdownMenuItem<FuelType>>(
+                                      (FuelType value) {
                                     return DropdownMenuItem<FuelType>(
                                       value: value,
-                                      child: Text(
-                                          value.toString().split('.').last),
+                                      child: Text(value.toString().split('.').last),
                                     );
                                   },
                                 ).toList(),
@@ -169,18 +203,17 @@ class _AddEditScreenState extends State<AddEditScreen> {
 
                         // zeroToHundred
                         DataRow(cells: [
-                          const DataCell(Text('zeroToHundred')),
+                          const DataCell(Text('0-100')),
                           DataCell(
                             SizedBox(
                               width: 200,
                               height: 50,
                               child: TextField(
-                                keyboardType: TextInputType.number,
                                 controller: zeroToHundredController,
+                                keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
-                                  hintText: 'Enter 0-100km/h',
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 10),
+                                  hintText: 'Enter 0-100',
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -192,18 +225,17 @@ class _AddEditScreenState extends State<AddEditScreen> {
 
                         // maxSpeed
                         DataRow(cells: [
-                          const DataCell(Text('maxSpeed')),
+                          const DataCell(Text('Top speed')),
                           DataCell(
                             SizedBox(
                               width: 200,
                               height: 50,
                               child: TextField(
-                                keyboardType: TextInputType.number,
                                 controller: maxSpeedController,
+                                keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
-                                  hintText: 'Enter max speed',
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 10),
+                                  hintText: 'Enter top speed',
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -215,18 +247,17 @@ class _AddEditScreenState extends State<AddEditScreen> {
 
                         // kerbWeight
                         DataRow(cells: [
-                          const DataCell(Text('kerbWeight')),
+                          const DataCell(Text('Kerb weight')),
                           DataCell(
                             SizedBox(
                               width: 200,
                               height: 50,
                               child: TextField(
-                                keyboardType: TextInputType.number,
                                 controller: kerbWeightController,
+                                keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   hintText: 'Enter kerb weight',
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 10),
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -238,7 +269,7 @@ class _AddEditScreenState extends State<AddEditScreen> {
 
                         // tireSize
                         DataRow(cells: [
-                          const DataCell(Text('tireSize')),
+                          const DataCell(Text('Tire size')),
                           DataCell(
                             SizedBox(
                               width: 200,
@@ -246,9 +277,8 @@ class _AddEditScreenState extends State<AddEditScreen> {
                               child: TextField(
                                 controller: tireSizeController,
                                 decoration: InputDecoration(
-                                  hintText: 'Enter your tire size',
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 10),
+                                  hintText: 'Enter tire size',
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -270,7 +300,7 @@ class _AddEditScreenState extends State<AddEditScreen> {
                         side: BorderSide(color: Colors.black, width: 2.0),
                       ),
                     ),
-                    child: const Text('Save Edit',
+                    child: const Text('Save Stats',
                         style: TextStyle(color: Colors.white)),
                   )
                 ],
@@ -313,10 +343,10 @@ class _AddEditScreenState extends State<AddEditScreen> {
     // Create a EditInfo object based on input data
     final EditInfo newEdit = EditInfo(
         engine: engineController.text,
-        hp: int.parse(hpController.text),
-        torque: int.parse(torqueController.text),
+        hp: double.parse(hpController.text),
+        torque: double.parse(torqueController.text),
         fuelType: selectedFuelType,
-        zeroToHundred: int.parse(zeroToHundredController.text),
+        zeroToHundred: double.parse(zeroToHundredController.text),
         maxSpeed: int.parse(maxSpeedController.text),
         kerbWeight: int.parse(kerbWeightController.text),
         tireSize: tireSizeController.text);
@@ -325,8 +355,9 @@ class _AddEditScreenState extends State<AddEditScreen> {
     for (var car in cars) {
       if (car.make == widget.selectedCar.make &&
           car.model == widget.selectedCar.model) {
-        car.editRecords.add(newEdit);
-        widget.selectedCar.editRecords.add(newEdit);
+        car.editRecord = newEdit;
+        widget.selectedCar.editRecord = newEdit;
+        print(car.editRecord);
         break;
       }
     }

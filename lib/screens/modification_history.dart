@@ -34,7 +34,7 @@ class _ModificationHistoryScreenState extends State<ModificationHistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Modification Book'),
+        title: const Text('Modification Planner'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
