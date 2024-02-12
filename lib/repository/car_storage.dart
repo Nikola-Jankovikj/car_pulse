@@ -4,7 +4,6 @@ import 'package:car_pulse/model/ModificationInfo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../model/ServiceInfo.dart';
 import '../model/car.dart';
-import '../model/EditInfo.dart';
 
 class CarStorage {
   static const _keyCar = 'carInfo';
@@ -25,26 +24,6 @@ class CarStorage {
       return [];
     }
   }
-
-  // Future<void> saveEditStatsInfo(Car car, EditStatsInfo editStatsInfo) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String editStatsInfoData = EditStatsInfo.listToJson([editStatsInfo]);
-  //   await prefs.setString(
-  //       _keyEditStatsInfo + car.id.toString(), editStatsInfoData);
-  // }
-
-  // Future<EditStatsInfo?> getEditStatsInfo(Car car) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   final editStatsInfoData =
-  //       prefs.getString(_keyEditStatsInfo + car.id.toString());
-  //   if (editStatsInfoData != null) {
-  //     List<EditStatsInfo> list = EditStatsInfo.listFromJson(editStatsInfoData);
-  //     if (list.isNotEmpty) {
-  //       return list.first;
-  //     }
-  //   }
-  //   return null;
-  // }
 
   String carToJson(Car car) {
     return json.encode(car.toJson());
