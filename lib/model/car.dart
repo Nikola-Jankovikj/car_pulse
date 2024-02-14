@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:car_pulse/model/EditInfo.dart';
 import 'package:uuid/uuid.dart';
+import '../service/notification_service.dart';
 import 'ServiceInfo.dart';
 import 'ModificationInfo.dart';
 
@@ -75,5 +76,28 @@ class Car {
   factory Car.fromJsonString(String jsonString) {
     final Map<String, dynamic> json = jsonDecode(jsonString);
     return Car.fromJson(json);
+  }
+
+  void setNextServiceDate() {
+
+    // Schedule or update notification
+    if (upcomingServiceDate != null) {
+      if (id != null) {
+        // If the car has an ID, it means it already has a scheduled notification
+        NotificationService.updateNotification(
+          id!.hashCode,
+          upcomingServiceDate!,
+          this
+        );
+      } else {
+        // If the car doesn't have an ID, it's a new car, so schedule a new notification
+        NotificationService.scheduleNotification(
+          id!.hashCode,
+          make,
+          model,
+          upcomingServiceDate!,
+        );
+      }
+    }
   }
 }

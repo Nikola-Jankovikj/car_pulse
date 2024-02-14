@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:car_pulse/screens/weather_screen.dart';
+import 'package:car_pulse/service/notification_service.dart';
 import 'package:flutter/material.dart';
 import '../model/car.dart';
 import '../service/car_service.dart';
@@ -19,6 +20,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+    NotificationService();
     loadCars();
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../model/car.dart';
 import '../repository/car_storage.dart';
+import '../service/notification_service.dart';
 
 class UpcomingService extends StatefulWidget {
   final Function(DateTime)? onDateSelected;
@@ -133,13 +134,24 @@ class _UpcomingServiceState extends State<UpcomingService> {
             car.model == widget.selectedCar.model) {
           car.lastServiceDate = lastServiceDate;
           widget.selectedCar.lastServiceDate = lastServiceDate;
-          car.upcomingServiceDate = lastServiceDate.add(const Duration(days: 365));
-          widget.selectedCar.upcomingServiceDate = lastServiceDate.add(const Duration(days: 365));
+          // car.upcomingServiceDate = lastServiceDate.add(const Duration(days: 365));
+          // widget.selectedCar.upcomingServiceDate = lastServiceDate.add(const Duration(days: 365));
+          car.upcomingServiceDate = lastServiceDate.add(const Duration(minutes: 1));
+          widget.selectedCar.upcomingServiceDate = lastServiceDate.add(const Duration(minutes: 1));
+          widget.selectedCar.setNextServiceDate();
+
           print("last: " + widget.selectedCar.lastServiceDate.toString());
           print("next: " + widget.selectedCar.upcomingServiceDate.toString());
           break;
         }
       }
+
+    NotificationService.scheduleNotification(
+      selectedCar.id.hashCode, // Assuming car has an ID
+      selectedCar.make,
+      selectedCar.model,
+      selectedCar.upcomingServiceDate as DateTime,
+    );
 
       // Save the updated cars to SharedPreferences
       carsStorage.saveCarInfo(cars);
