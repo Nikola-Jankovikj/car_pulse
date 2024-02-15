@@ -80,7 +80,8 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
                             onPressed: () => _selectDate(context),
                             child: Text(pickedDate != null
                                 ? pickedDate.toString().split(' ')[0]
-                                : 'Select Date'),
+                                : 'Select Date',
+                            style: TextStyle(color: Colors.black)),
                           )),
                         ]),
 
@@ -265,6 +266,19 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
       initialDate: DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: ColorScheme.light(
+              primary: Colors.green, // Text color
+              onPrimary: Colors.white, // Text color when selected
+              surface: Colors.white, // Background color
+              onSurface: Colors.black, // Text color on background
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (picked != null && picked != pickedDate) {
       setState(() {

@@ -3,7 +3,6 @@ import 'package:car_pulse/repository/car_storage.dart';
 import 'package:flutter/material.dart';
 import '../enums/FuelType.dart';
 import '../model/car.dart';
-import '../model/EditInfo.dart';
 
 typedef OnEditAddedCallback = Function(EditInfo);
 
@@ -357,7 +356,6 @@ class _AddEditScreenState extends State<AddEditScreen> {
           car.model == widget.selectedCar.model) {
         car.editRecord = newEdit;
         widget.selectedCar.editRecord = newEdit;
-        print(car.editRecord);
         break;
       }
     }

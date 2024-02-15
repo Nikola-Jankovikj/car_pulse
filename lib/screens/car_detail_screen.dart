@@ -2,17 +2,16 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:car_pulse/screens/edit_history.dart';
-import 'package:car_pulse/screens/editDetails.dart';
 import 'package:car_pulse/screens/modification_history.dart';
-import 'package:car_pulse/screens/modification_planner.dart';
 import 'package:car_pulse/screens/service_history.dart';
+import 'package:car_pulse/screens/upcoming_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../model/car.dart';
 
 class CarDetailScreen extends StatefulWidget {
-  final Car car; // Pass carId instead of the entire Car object
+  final Car car;
   final Function(Uint8List) onPhotoChanged;
 
   const CarDetailScreen(
@@ -139,6 +138,16 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
               ),
             ),
           );
+        } else if (label == "Upcoming Service") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => UpcomingService(
+                selectedCar: widget.car,
+              ),
+            ),
+          );
+          print(widget.car.lastServiceDate);
         }
       },
       child: Container(
