@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 void main() async{
   AwesomeNotifications().initialize(
     // Add your custom settings here, if needed
-    null, // Your app icon resource
+    'resource://drawable/res_car_icon', // Your app icon resource
     [
       NotificationChannel(
         channelKey: 'basic_channel',
