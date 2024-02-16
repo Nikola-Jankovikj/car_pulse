@@ -50,7 +50,7 @@ class _UpcomingServiceState extends State<UpcomingService> {
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 // Date picker
                 ElevatedButton(
                   onPressed: () {
@@ -62,7 +62,7 @@ class _UpcomingServiceState extends State<UpcomingService> {
                       builder: (BuildContext context, Widget? child) {
                         return Theme(
                           data: ThemeData.light().copyWith(
-                            colorScheme: ColorScheme.light(
+                            colorScheme: const ColorScheme.light(
                               primary: Colors.green, // Text color
                               onPrimary: Colors.white, // Text color when selected
                               surface: Colors.white, // Background color
@@ -112,7 +112,7 @@ class _UpcomingServiceState extends State<UpcomingService> {
                       side: BorderSide(color: Colors.black, width: 2.0),
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Save',
                     style: TextStyle(color: Colors.white),
                   ),
@@ -127,17 +127,17 @@ class _UpcomingServiceState extends State<UpcomingService> {
 
   void save(Car selectedCar, DateTime lastServiceDate) {
       // Create a EditInfo object based on input data
-    print("cars length: "+ cars.length.toString());
+    //print("cars length: ${cars.length}");
       // Save the new Edit to the selected car's edit records
       for (var car in cars) {
         if (car.make == widget.selectedCar.make &&
             car.model == widget.selectedCar.model) {
           car.lastServiceDate = lastServiceDate;
           widget.selectedCar.lastServiceDate = lastServiceDate;
-          // car.upcomingServiceDate = lastServiceDate.add(const Duration(days: 365));
-          // widget.selectedCar.upcomingServiceDate = lastServiceDate.add(const Duration(days: 365));
-          car.upcomingServiceDate = lastServiceDate.add(const Duration(minutes: 1));
-          widget.selectedCar.upcomingServiceDate = lastServiceDate.add(const Duration(minutes: 1));
+          car.upcomingServiceDate = lastServiceDate.add(const Duration(days: 365));
+          widget.selectedCar.upcomingServiceDate = lastServiceDate.add(const Duration(days: 365));
+          // car.upcomingServiceDate = lastServiceDate.add(const Duration(minutes: 1));
+          // widget.selectedCar.upcomingServiceDate = lastServiceDate.add(const Duration(minutes: 1));
           widget.selectedCar.setNextServiceDate();
 
           print("last: " + widget.selectedCar.lastServiceDate.toString());

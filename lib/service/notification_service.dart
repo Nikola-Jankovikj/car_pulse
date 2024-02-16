@@ -30,8 +30,13 @@ class NotificationService {
         body: 'Upcoming service for $carMake $carModel on $serviceText',
         wakeUpScreen: true,
       ),
-      schedule: NotificationInterval(
-        interval: 10,
+      schedule: NotificationCalendar(
+        //interval: 10,
+        weekday: serviceDate.weekday,
+        hour: serviceDate.hour,
+        minute: serviceDate.minute,
+        second: serviceDate.second,
+        allowWhileIdle: true,
         repeats: false,
       ),
     );
